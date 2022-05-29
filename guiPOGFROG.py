@@ -1,6 +1,7 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import ttk
+from tkinter import *
 from tkinter.messagebox import showinfo
 
 root = tk.Tk()
@@ -26,8 +27,14 @@ root.resizable(False, False)
 #Store username
 username = tk.StringVar()
 
-#Store username
+#Store manu
 manuName = tk.StringVar()
+
+#Store model
+modelName = tk.StringVar()
+
+#Store dist
+distName = tk.StringVar()
 
 
 def login_clicked(userFrame):
@@ -55,6 +62,32 @@ def manu_clicked(manuFrame):
 
     manuFrame.pack_forget()
     manuFrame.destroy()
+
+    model_page()
+
+def model_clicked(modelFrame):
+    #this value should be stored
+    print(modelName.get())
+
+    #clear frame and go to next page
+    for widget in modelFrame.winfo_children():
+        widget.destroy()
+
+    modelFrame.pack_forget()
+    modelFrame.destroy()
+
+    dist_page()
+
+def dist_clicked(distFrame):
+    #this value should be stored
+    print(distName.get())
+
+    #clear frame and go to next page
+    for widget in distFrame.winfo_children():
+        widget.destroy()
+
+    distFrame.pack_forget()
+    distFrame.destroy()
 
     #model_page()
 
@@ -93,14 +126,22 @@ def manufact_page():
     manuFrame.pack(padx=275, pady=(225,100), fill='x', expand=False)
 
     #Enter manu label
-    manuLabel = ttk.Label(manuFrame, text="Enter the Make of your vehicle")
+    manuLabel = ttk.Label(manuFrame, text="Enter the make of your vehicle")
     manuLabel.config(anchor='center')
-    manuLabel.pack(fill='x', pady=10, side='top', expand=True)
+    manuLabel.pack(fill='x', pady=10, expand=True)
 
     #Textbox entry for manu
-    manuEntry = ttk.Entry(manuFrame, textvariable=manuName)
-    manuEntry.pack(fill='x', pady=(10,0), expand=True)
-    manuEntry.focus()
+    # manuEntry = ttk.Entry(manuFrame, textvariable=manuName)
+    # manuEntry.pack(fill='x', pady=(10,0), expand=True)
+    # manuEntry.focus()
+
+    variable = StringVar(root)
+    variable.set("Select")
+
+    myOptions = ["One", "Two", "Three"]
+
+    w = OptionMenu(root, variable, *myOptions)
+    w.pack(fill='x', padx = 200, pady=(10,0), expand=True)
 
     #Next button
     next_button = ttk.Button(manuFrame, text="Next", command=lambda: manu_clicked(manuFrame))
@@ -108,7 +149,47 @@ def manufact_page():
 
     return manuName
 
+def model_page():
+    #model frame
+    modelFrame = tk.Frame(root)
+    modelFrame.pack(padx=275, pady=(225,100), fill='x', expand=False)
 
+    #Enter model label
+    modelLabel = ttk.Label(modelFrame, text="Enter the model of your vehicle")
+    modelLabel.config(anchor='center')
+    modelLabel.pack(fill='x', pady=10, side='top', expand=True)
+
+    #Textbox entry for model
+    modelEntry = ttk.Entry(modelFrame, textvariable=modelName)
+    modelEntry.pack(fill='x', pady=(10,0), expand=True)
+    modelEntry.focus()
+
+    #Next button
+    next_button = ttk.Button(modelFrame, text="Next", command=lambda: model_clicked(modelFrame))
+    next_button.pack(fill='x', expand=True, pady=(10,105))
+
+    return modelName
+
+def dist_page():
+    #dist frame
+    distFrame = tk.Frame(root)
+    distFrame.pack(padx=275, pady=(225,100), fill='x', expand=False)
+
+    #Enter dist label
+    distLabel = ttk.Label(distFrame, text="Enter your distanced travelled in kilometers")
+    distLabel.config(anchor='center')
+    distLabel.pack(fill='x', pady=10, side='top', expand=True)
+
+    #Textbox entry for dist
+    distEntry = ttk.Entry(distFrame, textvariable=distName)
+    distEntry.pack(fill='x', pady=(10,0), expand=True)
+    distEntry.focus()
+
+    #Next button
+    next_button = ttk.Button(distFrame, text="Next", command=lambda: dist_clicked(distFrame))
+    next_button.pack(fill='x', expand=True, pady=(10,105))
+
+    return distName
 
 
 
