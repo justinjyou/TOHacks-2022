@@ -1,8 +1,12 @@
-import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from tkinter.messagebox import showinfo
+import pandas as pd
+import os
+import seaborn as sns
+import matplotlib.pyplot as plt
+df = pd.read_excel(r"C:\Users\justi\Desktop\vehicles.xlsx")
 
 root = tk.Tk()
 
@@ -28,10 +32,12 @@ root.resizable(False, False)
 username = tk.StringVar()
 
 #Store manu
-manuName = tk.StringVar()
+manuNames = tk.StringVar()
+manuNames.set("Select make...")
 
 #Store model
 modelName = tk.StringVar()
+modelName.set("Select model...")
 
 #Store dist
 distName = tk.StringVar()
@@ -50,11 +56,10 @@ def login_clicked(userFrame):
     userFrame.destroy()
     manufact_page()
 
-
-
 def manu_clicked(manuFrame):
     #this value should be stored
-    print(manuName.get())
+    print(manuNames.get())
+    myMake = manuNames.get()
 
     #clear frame and go to next page
     for widget in manuFrame.winfo_children():
@@ -63,7 +68,7 @@ def manu_clicked(manuFrame):
     manuFrame.pack_forget()
     manuFrame.destroy()
 
-    model_page()
+    model_page(myMake)
 
 def model_clicked(modelFrame):
     #this value should be stored
@@ -89,7 +94,11 @@ def dist_clicked(distFrame):
     distFrame.pack_forget()
     distFrame.destroy()
 
-    #model_page()
+    plot_page()
+
+
+
+
 
 
 
@@ -131,25 +140,21 @@ def manufact_page():
     manuLabel.pack(fill='x', pady=10, expand=True)
 
     #Textbox entry for manu
-    # manuEntry = ttk.Entry(manuFrame, textvariable=manuName)
-    # manuEntry.pack(fill='x', pady=(10,0), expand=True)
-    # manuEntry.focus()
+    myMake = df["make"]
+    myMake = myMake.tolist()
+    myMake = sorted(list(set(myMake)), key = str.lower)
 
-    variable = StringVar(root)
-    variable.set("Select")
-
-    myOptions = ["One", "Two", "Three"]
-
-    w = OptionMenu(root, variable, *myOptions)
-    w.pack(fill='x', padx = 200, pady=(10,0), expand=True)
+    w = ttk.Combobox(manuFrame, textvariable = manuNames, values = myMake)
+    w.pack(fill='x', pady=(10,0), expand=True)
 
     #Next button
     next_button = ttk.Button(manuFrame, text="Next", command=lambda: manu_clicked(manuFrame))
     next_button.pack(fill='x', expand=True, pady=(10,105))
+    myMake = manuNames.get()
 
-    return manuName
+    return myMake
 
-def model_page():
+def model_page(manuNames):
     #model frame
     modelFrame = tk.Frame(root)
     modelFrame.pack(padx=275, pady=(225,100), fill='x', expand=False)
@@ -160,9 +165,15 @@ def model_page():
     modelLabel.pack(fill='x', pady=10, side='top', expand=True)
 
     #Textbox entry for model
-    modelEntry = ttk.Entry(modelFrame, textvariable=modelName)
-    modelEntry.pack(fill='x', pady=(10,0), expand=True)
-    modelEntry.focus()
+    userMake = manuNames
+    myModels = df["model"][df["make"] == userMake]
+    myModels = myModels.tolist()
+    myModels = list(set(myModels))
+    myModels = list(map(str, myModels))
+    myModels = sorted(myModels, key = str.lower)
+
+    w = ttk.Combobox(modelFrame, textvariable = modelName, values = myModels)
+    w.pack(fill='x', pady=(10,0), expand=True)
 
     #Next button
     next_button = ttk.Button(modelFrame, text="Next", command=lambda: model_clicked(modelFrame))
@@ -176,7 +187,7 @@ def dist_page():
     distFrame.pack(padx=275, pady=(225,100), fill='x', expand=False)
 
     #Enter dist label
-    distLabel = ttk.Label(distFrame, text="Enter your distanced travelled in kilometers")
+    distLabel = ttk.Label(distFrame, text="Enter distanced travelled today in kilometers")
     distLabel.config(anchor='center')
     distLabel.pack(fill='x', pady=10, side='top', expand=True)
 
@@ -190,6 +201,12 @@ def dist_page():
     next_button.pack(fill='x', expand=True, pady=(10,105))
 
     return distName
+
+def plot_page():
+    d = {'Number': [5,5,5,7,8,7,5]}
+    data1 = pd.DataFrame(d)
+    sns.histplot(data=data1, x="Number")
+    plt.show()
 
 
 
